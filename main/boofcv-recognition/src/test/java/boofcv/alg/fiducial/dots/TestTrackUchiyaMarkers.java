@@ -23,8 +23,13 @@ import boofcv.alg.feature.describe.llah.LlahHasher;
 import boofcv.alg.feature.describe.llah.LlahOperations;
 import boofcv.alg.shapes.ellipse.BinaryEllipseDetectorPixel;
 import boofcv.factory.filter.binary.FactoryThresholdBinary;
+import boofcv.factory.geo.ConfigRansac;
+import boofcv.factory.geo.FactoryMultiViewRobust;
+import boofcv.struct.geo.AssociatedPair;
 import boofcv.struct.image.GrayU8;
+import georegression.struct.homography.Homography2D_F64;
 import georegression.struct.point.Point2D_F64;
+import org.ddogleg.fitting.modelset.ransac.Ransac;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -70,9 +75,10 @@ class TestTrackUchiyaMarkers {
 
 	TrackUchiyaMarkers<GrayU8> createTracker() {
 		InputToBinary<GrayU8> thresholder = FactoryThresholdBinary.globalOtsu(0,255,1.0,true,GrayU8.class);
-		BinaryEllipseDetectorPixel ellipseDetector = new BinaryEllipseDetectorPixel();
-		LlahOperations ops = new LlahOperations(7,5,new LlahHasher.Affine(100,500000));
-
-		return new TrackUchiyaMarkers<>(thresholder,ellipseDetector,ops);
+		var ellipseDetector = new BinaryEllipseDetectorPixel();
+		var ops = new LlahOperations(7,5,new LlahHasher.Affine(100,500000));
+		Ransac<Homography2D_F64, AssociatedPair> ransac =
+				FactoryMultiViewRobust.homographyRansac(null,new ConfigRansac(100,2.0));
+		return new TrackUchiyaMarkers<>(thresholder,ellipseDetector,ops,ransac);
 	}
 }
