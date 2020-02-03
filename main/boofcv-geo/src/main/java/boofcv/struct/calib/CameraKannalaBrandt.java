@@ -37,22 +37,24 @@ public class CameraKannalaBrandt extends CameraPinhole {
 	@Getter @Setter public double[] coefSymm;
 
 	/** Coefficients for distortion terms in radial direction */
-	@Getter @Setter public double[] coefRad;
+	@Getter @Setter public double[] coefRad, coefRadTrig;
 
 	/** Coefficients for distortion terms in tangential direction */
-	@Getter @Setter public double[] coefTan;
+	@Getter @Setter public double[] coefTan, coefTanTrig;
 
 	/**
 	 * Constructor which allows the order of all distortion coefficients to be specified
 	 * @param numRadSym Number of terms in 'k' radially symmetric model. Standard is 5
-	 * @param numDistRad Number of terms in 'l' the radial distortion terms Standard is 3
-	 * @param numDistTan Number of terms in 'm' the tangential distortion terms. Standard is 3
+	 * @param numDistRad Number of terms in 'l' and 'm' the distortion polynomial terms Standard is 3
+	 * @param numDistTrig Number of terms in 'i'  and 'j' the distortion trigonometric polynomial terms. Standard is 4
 	 */
-	public CameraKannalaBrandt( int numRadSym, int numDistRad , int numDistTan )
+	public CameraKannalaBrandt( int numRadSym, int numDistRad , int numDistTrig )
 	{
 		coefSymm = new double[numRadSym];
 		coefRad = new double[numDistRad];
-		coefTan = new double[numDistTan];
+		coefTan = new double[numDistRad];
+		coefRadTrig = new double[numDistTrig];
+		coefTanTrig = new double[numDistTrig];
 	}
 
 	/**
@@ -67,7 +69,7 @@ public class CameraKannalaBrandt extends CameraPinhole {
 	 */
 	public CameraKannalaBrandt()
 	{
-		this(5,3,3);
+		this(5,3,4);
 	}
 
 	public CameraKannalaBrandt fsetSymmetric( double... coefs ) {
@@ -111,12 +113,14 @@ public class CameraKannalaBrandt extends CameraPinhole {
 
 		this.coefSymm = src.coefSymm.clone();
 		this.coefRad = src.coefRad.clone();
+		this.coefRadTrig = src.coefRadTrig.clone();
 		this.coefTan = src.coefTan.clone();
+		this.coefTanTrig = src.coefTanTrig.clone();
 	}
 
 	@Override
 	public <T extends CameraModel> T createLike() {
-		return (T)new CameraKannalaBrandt(coefSymm.length, coefRad.length, coefTan.length);
+		return (T)new CameraKannalaBrandt(coefSymm.length, coefRad.length, coefRadTrig.length);
 	}
 
 	@Override
