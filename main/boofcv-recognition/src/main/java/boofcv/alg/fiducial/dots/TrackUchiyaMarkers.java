@@ -27,6 +27,7 @@ import boofcv.struct.image.GrayU8;
 import boofcv.struct.image.ImageBase;
 import georegression.struct.homography.Homography2D_F64;
 import georegression.struct.point.Point2D_F64;
+import gnu.trove.map.hash.TIntObjectHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.ddogleg.fitting.modelset.ransac.Ransac;
@@ -130,11 +131,12 @@ public class TrackUchiyaMarkers<T extends ImageBase<T>> {
 		ransacPairs.reset();
 		for (int landmarkIdx = 0; landmarkIdx < observed.landmarkToDots.size; landmarkIdx++) {
 			final Point2D_F64 landmark = observed.document.landmarks.get(landmarkIdx);
-			var dotToLandmark = observed.landmarkToDots.get(landmarkIdx);
-			dotToLandmark.each(dc -> {
+			TIntObjectHashMap<LlahOperations.DotCount> dotToLandmark = observed.landmarkToDots.get(landmarkIdx);
+			dotToLandmark.forEachEntry((key,dc)-> {
 				if( dc.counts >= minDotHits) {
 					ransacPairs.grow().set(landmark,dots.get(dc.dotIdx));
 				}
+				return false;
 			});
 		}
 		if( ransacPairs.size < ransac.getMinimumSize() )

@@ -18,7 +18,7 @@
 
 package boofcv.alg.feature.describe.llah;
 
-import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 
 /**
  * Hash table that stores LLAH features.
@@ -28,7 +28,7 @@ import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 public class LlahHashTable {
 
 	// Stores features using their hashcode
-	IntObjectHashMap<LlahFeature> map = IntObjectHashMap.newMap();
+	TIntObjectHashMap<LlahFeature> map = new TIntObjectHashMap();
 
 	/**
 	 * Adds the feature to the map. If there's a collision it's added as the last element in the list

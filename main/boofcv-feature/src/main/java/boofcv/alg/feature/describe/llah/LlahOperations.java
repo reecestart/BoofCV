@@ -21,6 +21,7 @@ package boofcv.alg.feature.describe.llah;
 import boofcv.alg.nn.KdTreePoint2D_F64;
 import boofcv.struct.geo.PointIndex2D_F64;
 import georegression.struct.point.Point2D_F64;
+import gnu.trove.map.hash.TIntObjectHashMap;
 import lombok.Getter;
 import org.ddogleg.combinatorics.Combinations;
 import org.ddogleg.nn.FactoryNearestNeighbor;
@@ -30,7 +31,6 @@ import org.ddogleg.sorting.QuickSort_F64;
 import org.ddogleg.struct.FastQueue;
 import org.ddogleg.struct.GrowQueue_B;
 import org.ddogleg.struct.GrowQueue_I32;
-import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 
 import java.util.*;
 import java.util.stream.IntStream;
@@ -361,7 +361,7 @@ public class LlahOperations {
 			}
 
 			// note which dot referenced this landmark
-			IntObjectHashMap<DotCount> dots = results.landmarkToDots.get(found.landmarkID);
+			TIntObjectHashMap<DotCount> dots = results.landmarkToDots.get(found.landmarkID);
 			DotCount d2l = dots.get(dotIdx);
 			if( d2l == null ) {
 				d2l = storageD2L.grow();
@@ -426,8 +426,8 @@ public class LlahOperations {
 		/**
 		 * Used to see which dots have been matched to this document and how often
 		 */
-		public final FastQueue<IntObjectHashMap<DotCount>> landmarkToDots =
-				new FastQueue<>(IntObjectHashMap::newMap);
+		public final FastQueue<TIntObjectHashMap<DotCount>> landmarkToDots =
+				new FastQueue<>(TIntObjectHashMap::new);
 
 		public void reset() {
 			document = null;
