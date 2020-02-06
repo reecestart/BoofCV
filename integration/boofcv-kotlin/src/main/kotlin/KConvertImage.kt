@@ -39,3 +39,21 @@ fun <TI : ImageInterleaved<TI>, TG : ImageGray<TG>> Planar<TG>.asInterleaved() :
     GConvertImage.convert(this,interleaved)
     return interleaved
 }
+
+fun <T : ImageGray<T>,Y : ImageGray<Y>> Y.asType( type : Class<T>) : T {
+    val out = ImageType.single<T>(type).createImage(width, height)
+    GConvertImage.convert(this,out)
+    return out
+}
+
+fun <T : ImageGray<T>,Y : ImageGray<Y>> Planar<Y>.asType( type : Class<T>) : Planar<T> {
+    val out = ImageType.pl(numBands,type).createImage(width, height)
+    GConvertImage.convert(this,out)
+    return out
+}
+
+fun <T : ImageInterleaved<T>,Y : ImageInterleaved<Y>> Y.asType( type : Class<T>) : T {
+    val out = ImageType.il<T>(numBands,type).createImage(width, height)
+    GConvertImage.convert(this,out)
+    return out
+}
